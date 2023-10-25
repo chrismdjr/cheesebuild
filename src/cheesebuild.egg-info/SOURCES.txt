@@ -1,0 +1,10 @@
+LICENSE
+README.md
+pyproject.toml
+src/cheesebuild/__init__.py
+src/cheesebuild/_builder.py
+src/cheesebuild/project.py
+src/cheesebuild.egg-info/PKG-INFO
+src/cheesebuild.egg-info/SOURCES.txt
+src/cheesebuild.egg-info/dependency_links.txt
+src/cheesebuild.egg-info/top_level.txt
