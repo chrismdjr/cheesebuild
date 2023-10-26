@@ -1,2 +1,2 @@
 # cheesebuild
-A python build system, but with CHEESE.
+A python build system for GCC, but with CHEESE.

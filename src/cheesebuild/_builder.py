@@ -35,15 +35,15 @@ def worker_thread_func(
                 continue
 
         # Run g++:
-        object_file_path = os.path.join(project.project_dir, f"objects/{os.path.splitext(file_name)[0]}.o")
-        compilation_result = subprocess.run(["g++", "-c", file_path, "-o", object_file_path, *compiler_args], capture_output=True)
+        object_file_path = os.path.join(project.project_dir, f"cache/{os.path.splitext(file_name)[0]}.o")
+        compilation_result = subprocess.run([project.compiler, "-c", file_path, "-o", object_file_path, *compiler_args], capture_output=True)
 
         if compilation_result.returncode == 0: # Only cache file if it compile successfully
             with open(cache_file_path, "w") as f:
                 f.write(file_contents) # Cache contents of file
 
         else:
-            print(f"\nCompilation of \"{file_name}\" failed:\n\n{compilation_result.stderr.decode()}")
+            print(f"\nCompilation of \"{file_name}\" failed (status code {compilation_result.returncode}):\n\n{compilation_result.stderr.decode()}")
             failed_file_queue.put(file_path) # It failed, sad :(
             
         processed_file_queue.put(object_file_path) # We have processed the file!!!
@@ -93,17 +93,17 @@ def build_project(project, executable_path, compiler_args, linker_args):
                 break
 
             else:
-                print(f"\n\tFailed to compile {compilation_fails} file(s), aborting\n")
+                print(f"\n\tFailed to compile {compilation_fails} file(s)\n\nBuild failed.\n")
                 return
 
     # Linking stage:
     print("\n***** Linking Stage *****")
 
     print(f"\tLinking {len(compiled_files)} object file(s)...")
-    linking_result = subprocess.run(["g++", *compiled_files, "-o", executable_path, *linker_args], capture_output=True)
+    linking_result = subprocess.run([project.compiler, *compiled_files, "-o", executable_path, *linker_args], capture_output=True)
     if linking_result.returncode == 0: # True if we have successfully linked!
         build_elapsed_time = round(time.time() - build_started_time, 3)
         print(f"\tLinking stage successful (build took {build_elapsed_time}s)!\n")
 
     else:
-        print(f"\nLinking stage failed (status code {linking_result.returncode}):\n\n{linking_result.stderr.decode()}")
+        print(f"\nLinking stage failed (status code {linking_result.returncode}):\n\n{linking_result.stderr.decode()}\nBuild failed.\n")

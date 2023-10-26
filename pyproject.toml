@@ -4,7 +4,7 @@ version = "0.1.0"
 authors = [
   { name="afoxotter", email="otter@afox.page" },
 ]
-description = "A python build system, but with CHEESE."
+description = "A python build system for GCC, but with CHEESE."
 readme = "README.md"
 requires-python = ">=3.7"
 classifiers = [
