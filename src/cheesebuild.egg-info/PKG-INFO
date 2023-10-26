@@ -1,7 +1,7 @@
 Metadata-Version: 2.1
 Name: cheesebuild
-Version: 0.1.0
-Summary: A python build system, but with CHEESE.
+Version: 1.1.1
+Summary: A python build system for GCC, but with CHEESE.
 Author-email: afoxotter <otter@afox.page>
 Project-URL: Homepage, https://github.com/chrismdjr/cheesebuild
 Project-URL: Bug Tracker, https://github.com/chrismdjr/cheesebuild/issues
@@ -13,4 +13,4 @@ Description-Content-Type: text/markdown
 License-File: LICENSE
 
 # cheesebuild
-A python build system, but with CHEESE.
+A python build system for GCC, but with CHEESE.

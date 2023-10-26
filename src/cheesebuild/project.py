@@ -1,5 +1,5 @@
-from .compilers import *
-from ._builder import *
+from . import compilers
+from . import _builder
 
 import os
 
@@ -20,7 +20,7 @@ class Project:
         self.worker_count = worker_count
 
         # Init stuff:
-        if not is_supported_compiler(self.compiler): # True if the user said something that is_supported_compiler() didn't like
+        if not compilers.is_supported_compiler(self.compiler): # True if the user said something that is_supported_compiler() didn't like
             print(f"Compiler \"{self.compiler}\" is not currently supported by cheesebuild. Any attempts at building will fail.")
             return
 
@@ -52,7 +52,7 @@ class Project:
     def build(self, executable_path: str, compiler_args: list[str]=[], linker_args: list[str]=[]) -> None: # Build a project to an executable
         """Builds the cheesebuild project to a binary using the `g++` command."""
         # Run a quick check to make sure they are using a supported compiler:
-        if not is_supported_compiler(self.compiler):
+        if not compilers.is_supported_compiler(self.compiler):
             print(f"Compiler \"{self.compiler}\" is not currently supported by cheesebuild, aborting build")
             return
 
@@ -68,7 +68,7 @@ class Project:
         if not valid_type: # subprocess.run will only work if the args are valid
             raise TypeError("Compiler / linker args must be a list of strings.")
 
-        build_project(self, executable_path, compiler_args, linker_args)
+        _builder.build_project(self, executable_path, compiler_args, linker_args)
 
     def clear_cache(self) -> None:
         """Clears the source file cache stored in the cheesebuild project's `cache/` directory.
