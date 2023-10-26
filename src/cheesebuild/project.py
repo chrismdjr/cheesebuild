@@ -50,7 +50,7 @@ class Project:
         os.makedirs(os.path.join(self._project_dir, "cache"), exist_ok=True) # Make our project cache folder
 
     def build(self, executable_path: str, compiler_args: list[str]=[], linker_args: list[str]=[]) -> None: # Build a project to an executable
-        """Builds the cheesebuild project to a binary using the `g++` command."""
+        """Builds the cheesebuild project to a binary using the compiler specified in the project."""
         # Run a quick check to make sure they are using a supported compiler:
         if not compilers.is_supported_compiler(self.compiler):
             print(f"Compiler \"{self.compiler}\" is not currently supported by cheesebuild, aborting build")
