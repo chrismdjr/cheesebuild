@@ -4,7 +4,7 @@ import queue
 import time
 import os
 
-def worker_thread_func(
+def _worker_thread_func(
         worker_id,
         project,
         source_file_queue,
@@ -52,23 +52,27 @@ def build_project(project, executable_path, compiler_args, linker_args):
     build_started_time = time.time()
     print(f"Building project to executable path \"{executable_path}\" ({project.worker_count} workers):")
 
-    # Compilation stage:
-    print(f"\n***** Compilation Stage *****")
+    if len(project.source_files) == 0:
+        print("No source files in the project, aborting build")
+        return
+
     source_file_queue = queue.Queue()
     for project_file in project.source_files:
         if not os.path.isfile(project_file):
-            print(f"\n\t\"{project_file}\" does not exist, aborting\n")
+            print(f"\"{project_file}\" does not exist, aborting build")
             return
 
         source_file_queue.put(project_file)
 
+    # Compilation stage:
+    print(f"\n***** Compilation Stage *****")
     source_files_remaining = source_file_queue.qsize() # How many files we still need to compile / handle
 
     processed_file_queue = queue.Queue()
     failed_file_queue = queue.Queue()
     living_worker_threads = []
     for worker_id in range(project.worker_count): # Spawn workers
-        worker_thread = threading.Thread(target=worker_thread_func, args=(
+        worker_thread = threading.Thread(target=_worker_thread_func, args=(
             worker_id,
             project,
             source_file_queue,

@@ -1,6 +1,7 @@
 from . import compilers
 from . import _builder
 
+import re
 import os
 
 class Project:
@@ -8,15 +9,19 @@ class Project:
     def __init__(
             self,
             compiler: str="gcc",
-            dir: str="cheesebuild",
+            project_dir: str="cheesebuild",
             files: list[str]=[],
+            regex_search_dirs: list[str]=[],
+            regex_matches: list[str]=[],
             worker_count: int=5,
             auto_initialize=True,
         ):
-        self._project_dir = dir
+        self._project_dir = project_dir
 
         self.compiler = compiler
         self.source_files = files
+        self.regex_search_dirs = regex_search_dirs
+        self.regex_matches = regex_matches
         self.worker_count = worker_count
 
         # Init stuff:
@@ -27,13 +32,26 @@ class Project:
         print(f"Searching for cheese project at \"{self._project_dir}\"...")
 
         if self.is_initialized:
-            print(f"Found project, ready for building")
+            print(f"Found project")
 
         else:
-            print(f"Project was not found, auto_initialize={auto_initialize}...")
+            print(f"Project was not found, auto_initialize = {auto_initialize}...")
             if auto_initialize: # Only init it automatically if explicitly said
                 self.initialize()
+                print("Project initialized")
 
+        # Evalulate regex matches:
+        print("Evaluating project file regex matches")
+        compiled_regex_matches = [re.compile(regex_match) for regex_match in self.regex_matches]
+        for regex_search_dir in self.regex_search_dirs:
+            for file in os.listdir(regex_search_dir):
+                for regex_match in compiled_regex_matches:
+                    result = re.match(regex_match, file)
+                    if result: # True if we've found a file in our search dir that matches one of the regex
+                        self.source_files.append(os.path.join(regex_search_dir, file))
+                        break
+
+        print("Project is ready for building!")
         # Project is ready if we get past here
 
     @property
@@ -47,6 +65,10 @@ class Project:
     def initialize(self) -> None: # Set up a project in the project directory
         """Creates necessary files and folders for the cheesebuild project to live in the filesystem."""
         print("Initializing project...")
+        if self.is_initialized:
+            print("Project is already initialized, aborting initialization")
+            return
+        
         os.makedirs(os.path.join(self._project_dir, "cache"), exist_ok=True) # Make our project cache folder
 
     def build(self, executable_path: str, compiler_args: list[str]=[], linker_args: list[str]=[]) -> None: # Build a project to an executable
