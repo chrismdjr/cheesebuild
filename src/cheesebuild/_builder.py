@@ -50,7 +50,7 @@ def _worker_thread_func(
 
 def build_project(project, executable_path, compiler_args, linker_args):
     build_started_time = time.time()
-    print(f"Building project to executable path \"{executable_path}\" ({project.worker_count} workers):")
+    print(f"Building project to executable path \"{executable_path}\" ({project.worker_count} worker(s)):")
 
     if len(project.source_files) == 0:
         print("No source files in the project, aborting build")

@@ -40,6 +40,10 @@ class Project:
                 self.initialize()
                 print("Project initialized")
 
+        # Handle worker count:
+        if self.worker_count <= 0:
+            self.worker_count = 1
+
         # Evalulate regex matches:
         print("Evaluating project file regex matches")
         compiled_regex_matches = [re.compile(regex_match) for regex_match in self.regex_matches]

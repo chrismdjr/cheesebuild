@@ -1,6 +1,6 @@
 [project]
 name = "cheesebuild"
-version = "1.2.2"
+version = "1.2.3"
 authors = [
   { name="afoxotter", email="otter@afox.page" },
 ]
